@@ -22,7 +22,7 @@ export class UserBot {
   name: string;
 
   @Column('varchar')
-  channelID: string;
+  chatId: string;
 
   @Column('timestamptz')
   removed: Date;

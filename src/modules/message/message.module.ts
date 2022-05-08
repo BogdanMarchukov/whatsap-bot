@@ -10,5 +10,6 @@ import { HttpModule } from '@nestjs/axios';
     }),
   ],
   providers: [TextService],
+  exports: [TextService],
 })
 export class MessageModule {}

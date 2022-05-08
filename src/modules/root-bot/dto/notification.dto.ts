@@ -66,8 +66,8 @@ export class TextMessageDataDTO {
 @Exclude()
 export class MessageDataDTO {
   @Expose()
-  @IsString()
-  typeMessage: string;
+  @IsEnum(TypeMessage)
+  typeMessage: TypeMessage;
 
   @Expose()
   @IsOptional()
@@ -103,10 +103,6 @@ export class InputMessageDTO {
   @ValidateNested()
   @Type(() => senderDataDTO)
   senderData: senderDataDTO;
-
-  @Expose()
-  @IsEnum(TypeMessage)
-  typeMessage: TypeMessage;
 
   @Expose()
   @ValidateNested()

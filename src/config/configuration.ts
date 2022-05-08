@@ -1,4 +1,32 @@
-export default () => ({
+export interface CliType {
+  migrationsDir: string;
+}
+
+export interface DbType {
+  type: string;
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+  database: string;
+  entities: string[];
+  migrationsTableName: string;
+  migrations: string[];
+  cli: CliType;
+  autoLoadEntities;
+}
+
+export interface RootCredentialType {
+  instance: string;
+  token: string;
+}
+
+interface ConfigType {
+  db: DbType;
+  rootCredential: RootCredentialType;
+}
+
+export default (): ConfigType => ({
   db: {
     type: 'postgres',
     host: process.env.POSTGRES_HOST || '127.0.0.1',
@@ -13,5 +41,9 @@ export default () => ({
       migrationsDir: 'src/migrations',
     },
     autoLoadEntities: true,
+  },
+  rootCredential: {
+    instance: process.env.rootInstans,
+    token: process.env.rootToken,
   },
 });

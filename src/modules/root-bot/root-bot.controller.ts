@@ -7,7 +7,7 @@ export class RootBotController {
   constructor(private readonly rootBotService: RootBotService) {}
 
   @Post()
-  createBot(@Body() inputMessageDTO: InputMessageDTO) {
-    this.rootBotService.createBot(inputMessageDTO);
+  async createBot(@Body() inputMessageDTO: InputMessageDTO) {
+    return await this.rootBotService.createBot(inputMessageDTO);
   }
 }
