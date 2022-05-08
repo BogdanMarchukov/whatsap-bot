@@ -3,7 +3,7 @@ import { RootBotModule } from './modules/root-bot/root-bot.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConnectionOptions } from 'typeorm';
+import { MessageModule } from './modules/message/message.module';
 
 @Module({
   imports: [
@@ -16,6 +16,7 @@ import { ConnectionOptions } from 'typeorm';
       useFactory: (configService: ConfigService) => configService.get('db'),
       inject: [ConfigService],
     }),
+    MessageModule,
   ],
 })
 export class AppModule {}

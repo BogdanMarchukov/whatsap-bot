@@ -1,11 +1,18 @@
 import { Exclude, Expose, Type } from 'class-transformer';
-import { IsEnum, IsNumber, IsString, ValidateNested } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 
-enum TypeMessage {
+export enum TypeMessage {
   imageMessage = 'imageMessage',
   videoMessage = 'videoMessage',
   documentMessage = 'documentMessage',
   audioMessage = 'audioMessage',
+  textMessage = 'textMessage',
 }
 
 @Exclude()
@@ -50,6 +57,30 @@ export class FileMessageDataDTO {
 }
 
 @Exclude()
+export class TextMessageDataDTO {
+  @Expose()
+  @IsString()
+  textMessage: string;
+}
+
+@Exclude()
+export class MessageDataDTO {
+  @Expose()
+  @IsString()
+  typeMessage: string;
+
+  @Expose()
+  @IsOptional()
+  @Type(() => FileMessageDataDTO)
+  fileMessageData?: FileMessageDataDTO;
+
+  @Expose()
+  @IsOptional()
+  @Type(() => TextMessageDataDTO)
+  textMessageData?: TextMessageDataDTO;
+}
+
+@Exclude()
 export class InputMessageDTO {
   @Expose()
   @IsString()
@@ -79,6 +110,6 @@ export class InputMessageDTO {
 
   @Expose()
   @ValidateNested()
-  @Type(() => FileMessageDataDTO)
-  fileMessageData: FileMessageDataDTO;
+  @Type(() => MessageDataDTO)
+  messageData: MessageDataDTO;
 }
