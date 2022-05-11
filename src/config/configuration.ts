@@ -24,6 +24,7 @@ export interface RootCredentialType {
 interface ConfigType {
   db: DbType;
   rootCredential: RootCredentialType;
+  userWebhookUrl: string;
 }
 
 export default (): ConfigType => ({
@@ -46,4 +47,5 @@ export default (): ConfigType => ({
     instance: process.env.rootInstans,
     token: process.env.rootToken,
   },
+  userWebhookUrl: process.env.HOST || 'http://locholhost:3000',
 });

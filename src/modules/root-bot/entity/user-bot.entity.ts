@@ -13,16 +13,16 @@ export class UserBot {
   createdAt: Date;
 
   @Column('varchar')
-  idInstance: string;
+  idInstance!: string;
 
   @Column('varchar')
-  apiTokenInstance: string;
+  apiTokenInstance!: string;
 
   @Column('varchar')
-  name: string;
+  name!: string;
 
   @Column('varchar')
-  chatId: string;
+  chatId!: string;
 
   @Column('timestamptz')
   removed: Date;
