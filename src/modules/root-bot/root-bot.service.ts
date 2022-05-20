@@ -74,8 +74,10 @@ export class RootBotService {
         textMessageData: { textMessage },
       } = inputMessageDTO.messageData;
       if (textMessage.toLowerCase() === '#r') {
+        await this.registerBot(textMessage, chatId, true);
         return;
       }
+      const text = textMessage.toLowerCase().split(':');
     }
   }
 }
