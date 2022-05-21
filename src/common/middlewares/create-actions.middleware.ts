@@ -12,9 +12,14 @@ export interface ActionRequest extends Request {
 export class CreateActionMiddleware implements NestMiddleware {
   createAction(req: ActionRequest) {
     const { typeMessage, textMessageData } = req.body.messageData;
+    const text = textMessageData.textMessage.toLowerCase();
+    const textActionArray = text.split(':');
     if (typeMessage === 'textMessage') {
-      if (textMessageData.textMessage.toLowerCase() === '#r') {
+      if (text === '#r') {
         return ActionType.TEMPLATE_REGISTRATION;
+      }
+      if (textActionArray[0] === '#r-Имя') {
+        return ActionType.REGISTRATION;
       }
     }
   }

@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { RootBotService } from './root-bot.service';
-import { InputMessageDTO } from './dto/notification.dto';
+import { InputMessageDTO, MessageDataDTO } from './dto/notification.dto';
 import { RequestAction } from '../../common/decorators/requers-action-decorators';
 import { ActionRequest } from '../../common/middlewares/create-actions.middleware';
 import { ActionType } from '../../common/middlewares/action-type';
@@ -16,8 +16,11 @@ export class RootBotController {
   ) {
     switch (reqAction.action) {
       case ActionType.TEMPLATE_REGISTRATION:
-        // TODO ОТПРАВКА ШАБЛОНА РЕГИСТРАЦИИ
-        return await this.rootBotService.createBot(inputMessageDTO);
+        const { chatId } = inputMessageDTO.senderData;
+        const { textMessage } = inputMessageDTO.messageData.textMessageData;
+        return await this.rootBotService.registerBot(null, chatId, true);
+      case ActionType.REGISTRATION:
+        return await this.rootBotService.registerBot(textMessage, chatId);
       default:
         return;
     }

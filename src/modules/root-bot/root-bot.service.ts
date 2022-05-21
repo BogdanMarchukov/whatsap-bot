@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { InputMessageDTO } from './dto/notification.dto';
 import { ConfigService } from '@nestjs/config';
 import { RootCredentialType } from '../../config/configuration';
 import { TextService } from '../message/text.service';
 import { UserBotRepository } from './user-bot.repository';
+
 interface ClientDataType {
   name: string | null;
   IdInstance: string | null;
@@ -20,7 +20,11 @@ export class RootBotService {
   private rootCredential =
     this.configService.get<RootCredentialType>('rootCredential');
 
-  private async registerBot(message: string, chatId: string, template = false) {
+  public async registerBot(
+    message: string | null,
+    chatId: string,
+    template = false,
+  ) {
     const clientBotData: ClientDataType = {
       name: null,
       IdInstance: null,
@@ -33,6 +37,7 @@ export class RootBotService {
         '#r-Имя:Вася,IdInstance:1111111111,ApiTokenInstance:0000000000000000',
         chatId,
       );
+      return;
     } else {
       message.split(',').forEach((i, index) => {
         if (index === 0) {
@@ -64,20 +69,6 @@ export class RootBotService {
           chatId,
         );
       }
-    }
-  }
-
-  public async createBot(inputMessageDTO: InputMessageDTO) {
-    const { chatId } = inputMessageDTO.senderData;
-    if (inputMessageDTO.messageData.typeMessage === 'textMessage') {
-      const {
-        textMessageData: { textMessage },
-      } = inputMessageDTO.messageData;
-      if (textMessage.toLowerCase() === '#r') {
-        await this.registerBot(textMessage, chatId, true);
-        return;
-      }
-      const text = textMessage.toLowerCase().split(':');
     }
   }
 }
