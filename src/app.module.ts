@@ -5,6 +5,7 @@ import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessageModule } from './modules/message/message.module';
 import { CreateActionMiddleware } from './common/middlewares/create-actions.middleware';
+import { UserBotModule } from './modules/user-bot/user-bot.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CreateActionMiddleware } from './common/middlewares/create-actions.midd
       inject: [ConfigService],
     }),
     MessageModule,
+    UserBotModule,
   ],
 })
 export class AppModule implements NestModule {
