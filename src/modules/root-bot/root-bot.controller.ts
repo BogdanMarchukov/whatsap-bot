@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { RootBotService } from './root-bot.service';
-import { InputMessageDTO } from './dto/notification.dto';
+import { InputMessageDTO } from '../../common/dto/notification.dto';
 import { RequestAction } from '../../common/decorators/requers-action-decorators';
 import { ActionRequest } from '../../common/middlewares/create-actions.middleware';
 import { ActionType } from '../../common/middlewares/action-type';

@@ -25,5 +25,6 @@ import { UserBotModule } from './modules/user-bot/user-bot.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(CreateActionMiddleware).forRoutes('*');
+    consumer.apply(CreateActionMiddleware).forRoutes('/user-bot');
   }
 }

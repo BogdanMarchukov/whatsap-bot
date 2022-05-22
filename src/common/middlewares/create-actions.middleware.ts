@@ -1,11 +1,11 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { InputMessageDTO } from '../../modules/root-bot/dto/notification.dto';
+import { InputMessageDTO } from '../dto/notification.dto';
 import { ActionType } from './action-type';
 
 export interface ActionRequest extends Request {
   body: InputMessageDTO;
-  action: string;
+  action: ActionType;
 }
 
 @Injectable()
@@ -20,6 +20,9 @@ export class CreateActionMiddleware implements NestMiddleware {
       }
       if (textActionArray[0] === '#r-Имя') {
         return ActionType.REGISTRATION;
+      }
+      if (text === '#s') {
+        return ActionType.TEMPLATE_USER_MESSAGE;
       }
     }
   }
