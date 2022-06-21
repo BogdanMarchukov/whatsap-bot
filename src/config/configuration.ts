@@ -44,8 +44,8 @@ export default (): ConfigType => ({
     autoLoadEntities: true,
   },
   rootCredential: {
-    instance: process.env.rootInstans,
-    token: process.env.rootToken,
+    instance: process.env.ROOT_INSTANS,
+    token: process.env.ROOT_TOCEN,
   },
   userWebhookUrl: process.env.HOST || 'http://locholhost:3000',
 });

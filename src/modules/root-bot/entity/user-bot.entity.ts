@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 @Entity()
-export class UserBot {
+export class UserBot{
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -24,6 +24,6 @@ export class UserBot {
   @Column('varchar')
   chatId!: string;
 
-  @Column('timestamptz')
-  removed: Date;
+  @Column({ type: 'timestamptz', nullable: true })
+  removed: Date | null;
 }

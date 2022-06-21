@@ -12,12 +12,13 @@ export class RootBotController {
   @Post()
   async createBot(
     @Body() inputMessageDTO: InputMessageDTO,
-    @RequestAction() reqAction: ActionRequest,
+    @RequestAction() reqAction: ActionType,
   ) {
-    switch (reqAction.action) {
+    const { chatId } = inputMessageDTO.senderData;
+    const { textMessage } = inputMessageDTO.messageData.textMessageData;
+    console.log(reqAction);
+    switch (reqAction) {
       case ActionType.TEMPLATE_REGISTRATION:
-        const { chatId } = inputMessageDTO.senderData;
-        const { textMessage } = inputMessageDTO.messageData.textMessageData;
         return await this.rootBotService.registerBot(null, chatId, true);
       case ActionType.REGISTRATION:
         return await this.rootBotService.registerBot(textMessage, chatId);

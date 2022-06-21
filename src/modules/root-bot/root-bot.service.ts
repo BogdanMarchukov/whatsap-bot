@@ -39,22 +39,29 @@ export class RootBotService {
       );
       return;
     } else {
+      console.log('ntcn');
       message.split(',').forEach((i, index) => {
         if (index === 0) {
           clientBotData.name = i.split(':')[1];
+          return;
         }
         if (index === 1) {
           clientBotData.IdInstance = i.split(':')[1];
+          return;
         }
-        if (index === 3) {
+        if (index === 2) {
           clientBotData.ApiTokenInstance = i.split(':')[1];
         }
       });
-      const result = await this.textService.registerWebhook(
-        clientBotData.IdInstance,
-        clientBotData.ApiTokenInstance,
-      );
-      if (result.status < 400) {
+      const isBot = await this.userBotRepository.findOne({
+        where: { chatId },
+      });
+      if (isBot) {
+        isBot.idInstance = clientBotData.IdInstance;
+        isBot.apiTokenInstance = clientBotData.ApiTokenInstance;
+        isBot.name = clientBotData.name;
+        await this.userBotRepository.save(isBot);
+      } else {
         const userBot = this.userBotRepository.create({
           chatId,
           name: clientBotData.name,
@@ -62,13 +69,13 @@ export class RootBotService {
           idInstance: clientBotData.IdInstance,
         });
         await this.userBotRepository.save(userBot);
-        await this.textService.sentMessage(
-          clientBotData.IdInstance,
-          clientBotData.ApiTokenInstance,
-          `Бот ${clientBotData.name} зарегистрирован`,
-          chatId,
-        );
       }
+      await this.textService.sentMessage(
+        this.rootCredential.instance,
+        this.rootCredential.token,
+        `Бот ${clientBotData.name} зарегистрирован`,
+        chatId,
+      );
     }
   }
 }
