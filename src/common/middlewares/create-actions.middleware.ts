@@ -29,6 +29,9 @@ export class CreateActionMiddleware implements NestMiddleware {
       if (text === '#s') {
         return ActionType.TEMPLATE_USER_MESSAGE;
       }
+      if (text === '#g') {
+        return ActionType.TEMPLATE_ADD_CHAT;
+      }
       return ActionType.NULL;
     }
   }
