@@ -2,13 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Group } from './group.entity';
-
+import { UserBot } from './user-bot.entity';
 @Entity()
-export class UserBot {
+export class Group {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -16,20 +15,14 @@ export class UserBot {
   createdAt: Date;
 
   @Column('varchar')
-  idInstance!: string;
+  groupId!: string;
 
   @Column('varchar')
-  apiTokenInstance!: string;
-
-  @Column('varchar')
-  name!: string;
-
-  @Column('varchar')
-  chatId!: string;
+  groupName!: string;
 
   @Column({ type: 'timestamptz', nullable: true })
   removed: Date | null;
 
-  @OneToMany(() => Group, (group) => group.userBot)
-  chats: Group[];
+  @ManyToOne(() => UserBot, (UserBot) => UserBot.chats)
+  userBot: UserBot;
 }
