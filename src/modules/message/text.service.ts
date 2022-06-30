@@ -4,6 +4,25 @@ import { ConfigService } from '@nestjs/config';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosResponse } from 'axios';
 
+interface ContactType {
+  displayName: string;
+  vcard: string;
+}
+
+interface LestMessageType {
+  idMessage: string;
+  timestamp: Date;
+  statusMessage: string;
+  typeMessage: string;
+  chatId: string;
+  textMessage: string;
+  downloadUrl: string;
+  caption: string;
+  location: any;
+  contact: ContactType;
+  extendedTextMessage: any;
+}
+
 @Injectable()
 export class TextService {
   private userWebhookUrl = this.configService.get<string>('userWebhookUrl');
@@ -39,6 +58,26 @@ export class TextService {
         incomingWebhook: 'yes',
         deviceWebhook: 'no',
       },
+    );
+    observer.pipe(
+      catchError((err, caught) => {
+        if (err) {
+          this.logger.log(err, 'Error register');
+        }
+        return caught;
+      }),
+    );
+    return firstValueFrom<AxiosResponse>(observer);
+  }
+
+  getLestMessage(
+    idInstance: string,
+    token: string,
+  ): Promise<AxiosResponse<LestMessageType>> {
+    const observer = this.httpService.get(
+      `
+      https://api.green-api.com/waInstance${idInstance}/LastOutgoingMessages/${token}
+`,
     );
     observer.pipe(
       catchError((err, caught) => {
