@@ -23,6 +23,23 @@ interface LestMessageType {
   extendedTextMessage: any;
 }
 
+interface ParticipantsType {
+  id: string;
+  isAdmin: boolean;
+  isSuperAdmin: boolean;
+}
+
+interface GroupDataType {
+  groupId: string;
+  owner: string;
+  subject: string;
+  creation: number;
+  participants: ParticipantsType[];
+  subjectTime: number;
+  subjectOwner: string;
+  groupInviteLink: string;
+}
+
 @Injectable()
 export class TextService {
   private userWebhookUrl = this.configService.get<string>('userWebhookUrl');
@@ -73,11 +90,35 @@ export class TextService {
   getLestMessage(
     idInstance: string,
     token: string,
-  ): Promise<AxiosResponse<LestMessageType>> {
+  ): Promise<AxiosResponse<LestMessageType[]>> {
     const observer = this.httpService.get(
       `
       https://api.green-api.com/waInstance${idInstance}/LastOutgoingMessages/${token}
 `,
+    );
+    observer.pipe(
+      catchError((err, caught) => {
+        if (err) {
+          this.logger.log(err, 'Error register');
+        }
+        return caught;
+      }),
+    );
+    return firstValueFrom<AxiosResponse>(observer);
+  }
+
+  getGroupData(
+    idInstance: string,
+    token: string,
+    groupId: string,
+  ): Promise<AxiosResponse<GroupDataType>> {
+    const observer = this.httpService.post(
+      `
+      https://api.green-api.com/waInstance${idInstance}/GetGroupData/${token}
+`,
+      {
+        groupId,
+      },
     );
     observer.pipe(
       catchError((err, caught) => {

@@ -17,13 +17,16 @@ export class RootBotController {
     @RequestUserDecorator() userBot: UserBot,
   ) {
     const { chatId } = inputMessageDTO.senderData;
-    const { textMessage } = inputMessageDTO.messageData.textMessageData;
-    console.log(reqAction);
     switch (reqAction) {
       case ActionType.TEMPLATE_REGISTRATION:
         return await this.rootBotService.registerBot(null, chatId, true);
       case ActionType.REGISTRATION:
-        return await this.rootBotService.registerBot(textMessage, chatId);
+        return await this.rootBotService.registerBot(
+          inputMessageDTO?.messageData?.textMessageData?.textMessage,
+          chatId,
+        );
+      case ActionType.TEMPLATE_ADD_CHAT:
+        return await this.rootBotService.sentTemplateAddGroup(userBot);
       default:
         return;
     }

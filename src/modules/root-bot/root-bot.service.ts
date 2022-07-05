@@ -98,18 +98,32 @@ export class RootBotService {
     );
 
     setTimeout(async () => {
-      const result = await this.textService.getLestMessage(
+      const { data } = await this.textService.getLestMessage(
         userBot.idInstance,
         userBot.apiTokenInstance,
       );
-      const { chatId, contact } = result.data;
-      const newGroupEntity = this.groupRepository.create({
-        groupId: chatId,
-        groupName: contact.displayName,
-      });
-      const groupEntity = this.groupRepository.save(newGroupEntity);
-      console.log(groupEntity);
-      // TODO принял последнее сообшение и сохранил в таюлицу нужно протестировать и добавить в роутер
+      if (data.length) {
+        const { chatId } = data[0];
+        const { data: dataGroup } = await this.textService.getGroupData(
+          userBot.idInstance,
+          userBot.apiTokenInstance,
+          chatId,
+        );
+        const newGroupEntity = this.groupRepository.create({
+          groupId: chatId,
+          groupName: dataGroup.subject,
+          userBot,
+        });
+        const groupEntity = await this.groupRepository.save(newGroupEntity);
+        await this.textService.sentMessage(
+          this.rootCredential.instance,
+          this.rootCredential.token,
+          `
+      Чат "${groupEntity.groupName}" - успешно зарегистрирован
+      `,
+          userBot.chatId,
+        );
+      }
     }, 30000);
   }
 }
