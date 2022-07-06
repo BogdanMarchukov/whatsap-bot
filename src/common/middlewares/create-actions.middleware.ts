@@ -1,6 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { ActionType } from './action-type';
+import { DateTime } from 'luxon';
 
 export interface ActionRequest extends Request {
   action: ActionType;
@@ -9,14 +10,22 @@ export interface ActionRequest extends Request {
 @Injectable()
 export class CreateActionMiddleware implements NestMiddleware {
   createAction(req: ActionRequest) {
-    if (
-      !req.body.messageData ||
-      req.body.messageData.typeMessage !== 'textMessage'
-    ) {
+    const messageType = ['textMessage', 'imageMessage'];
+    const moscow = DateTime.local(2022, 7, 6, 20, 30, 20).setZone(
+      'Europe/Moscow',
+    );
+    const teme = DateTime.local().setZone('Europe/Moscow');
+    if (moscow.toSQL() > teme.toSQL()) {
+      console.log('Moscow');
+    } else {
+      console.log('time');
+    }
+    const typeMessage = req.body.messageData.typeMessage;
+    const textMessageData = req.body.messageData.textMessageData;
+    if (!typeMessage || !textMessageData) {
       return ActionType.NULL;
     }
-    const { typeMessage, textMessageData } = req.body.messageData;
-    const text = textMessageData.textMessage.toLowerCase();
+    const text = textMessageData?.textMessage?.toLowerCase();
     const textActionArray = text.split(':');
     console.log(textActionArray);
     if (typeMessage === 'textMessage') {

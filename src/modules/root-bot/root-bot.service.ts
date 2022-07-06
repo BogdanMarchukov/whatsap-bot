@@ -85,6 +85,16 @@ export class RootBotService {
     }
   }
 
+  async sentTemplateUserMessage(userBot: UserBot) {
+    await this.textService.sentMessage(
+      this.rootCredential.instance,
+      this.rootCredential.token,
+      '#s-Д:М:ГГГГ:Ч:М ...текст. Важно(в дате и времени не должно быть нуля перед числом - (06)',
+      userBot.chatId,
+    );
+    return;
+  }
+
   public async sentTemplateAddGroup(userBot: UserBot) {
     const { chatId } = userBot;
     await this.textService.sentMessage(

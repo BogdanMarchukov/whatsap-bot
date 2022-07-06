@@ -27,6 +27,8 @@ export class RootBotController {
         );
       case ActionType.TEMPLATE_ADD_CHAT:
         return await this.rootBotService.sentTemplateAddGroup(userBot);
+      case ActionType.TEMPLATE_USER_MESSAGE:
+        return await this.rootBotService.sentTemplateUserMessage(userBot);
       default:
         return;
     }
