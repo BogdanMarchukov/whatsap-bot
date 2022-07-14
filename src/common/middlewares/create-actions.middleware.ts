@@ -10,7 +10,6 @@ export interface ActionRequest extends Request {
 @Injectable()
 export class CreateActionMiddleware implements NestMiddleware {
   createAction(req: ActionRequest) {
-    const messageType = ['textMessage', 'imageMessage'];
     const moscow = DateTime.local(2022, 7, 6, 20, 30, 20).setZone(
       'Europe/Moscow',
     );
@@ -21,14 +20,21 @@ export class CreateActionMiddleware implements NestMiddleware {
       console.log('time');
     }
     const typeMessage = req.body.messageData.typeMessage;
-    const textMessageData = req.body.messageData.textMessageData;
+    let textMessageData = req.body.messageData.textMessageData;
+    if (!textMessageData) {
+      textMessageData = {
+        textMessage: req.body.messageData.fileMessageData.caption,
+      };
+    }
     if (!typeMessage || !textMessageData) {
       return ActionType.NULL;
     }
     const text = textMessageData?.textMessage?.toLowerCase();
     const textActionArray = text.split(':');
     console.log(textActionArray);
-    if (typeMessage === 'textMessage') {
+    const type = ['imageMessage', 'textMessage'];
+    console.log(type.includes(typeMessage), 'gggggggg');
+    if (type.includes(typeMessage)) {
       if (text === '#r') {
         return ActionType.TEMPLATE_REGISTRATION;
       }
@@ -41,8 +47,12 @@ export class CreateActionMiddleware implements NestMiddleware {
       if (text === '#g') {
         return ActionType.TEMPLATE_ADD_CHAT;
       }
+      if (textActionArray[0] === '#sa') {
+        return ActionType.USER_MESSAGE;
+      }
       return ActionType.NULL;
     }
+    return ActionType.NULL;
   }
 
   async use(req: ActionRequest, res: Response, next: NextFunction) {

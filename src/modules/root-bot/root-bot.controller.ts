@@ -29,6 +29,8 @@ export class RootBotController {
         return await this.rootBotService.sentTemplateAddGroup(userBot);
       case ActionType.TEMPLATE_USER_MESSAGE:
         return await this.rootBotService.sentTemplateUserMessage(userBot);
+      case ActionType.USER_MESSAGE:
+        return await this.rootBotService.delayedMessage(inputMessageDTO);
       default:
         return;
     }

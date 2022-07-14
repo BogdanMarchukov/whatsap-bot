@@ -5,6 +5,7 @@ import { TextService } from '../message/text.service';
 import { UserBotRepository } from './user-bot.repository';
 import { UserBot } from './entity/user-bot.entity';
 import { GroupRepository } from './group.repository';
+import { InputMessageDTO } from '../../common/dto/notification.dto';
 
 interface ClientDataType {
   name: string | null;
@@ -89,10 +90,22 @@ export class RootBotService {
     await this.textService.sentMessage(
       this.rootCredential.instance,
       this.rootCredential.token,
-      '#s-Д:М:ГГГГ:Ч:М ...текст. Важно(в дате и времени не должно быть нуля перед числом - (06)',
+      '#sa:Д:М:ГГГГ:Ч:М:Название чата: ...текст. Важно(в дате и времени не должно быть нуля перед числом - (06)',
       userBot.chatId,
     );
     return;
+  }
+
+  async delayedMessage(inputMessageDTO: InputMessageDTO) {
+    let content = '';
+    let url = '';
+    if (inputMessageDTO.messageData.fileMessageData) {
+      content = inputMessageDTO.messageData.fileMessageData.caption;
+      url = inputMessageDTO.messageData.fileMessageData.downloadUrl;
+    } else {
+      content = inputMessageDTO.messageData.textMessageData.textMessage;
+    }
+    console.log(content, '8888');
   }
 
   public async sentTemplateAddGroup(userBot: UserBot) {
