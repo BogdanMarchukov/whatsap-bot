@@ -6,6 +6,8 @@ import { UserBotRepository } from './user-bot.repository';
 import { UserBot } from './entity/user-bot.entity';
 import { GroupRepository } from './group.repository';
 import { InputMessageDTO } from '../../common/dto/notification.dto';
+import { DateTime } from 'luxon';
+import { MessageRepository } from './message.repository';
 
 interface ClientDataType {
   name: string | null;
@@ -20,6 +22,7 @@ export class RootBotService {
     private readonly textService: TextService,
     private readonly userBotRepository: UserBotRepository,
     private readonly groupRepository: GroupRepository,
+    private readonly messageRepository: MessageRepository,
   ) {}
   private rootCredential =
     this.configService.get<RootCredentialType>('rootCredential');
@@ -96,7 +99,7 @@ export class RootBotService {
     return;
   }
 
-  async delayedMessage(inputMessageDTO: InputMessageDTO) {
+  async delayedMessage(inputMessageDTO: InputMessageDTO, userBot: UserBot) {
     let content = '';
     let url = '';
     if (inputMessageDTO.messageData.fileMessageData) {
@@ -105,7 +108,54 @@ export class RootBotService {
     } else {
       content = inputMessageDTO.messageData.textMessageData.textMessage;
     }
-    console.log(content, '8888');
+
+    const splitContent = content.split(':');
+    const date = DateTime.local(
+      +splitContent[3],
+      +splitContent[2],
+      +splitContent[1],
+      +splitContent[4],
+      +splitContent[5],
+    ).setZone('Europe/Moscow');
+    if (!date.isValid) {
+      await this.textService.sentMessage(
+        this.rootCredential.instance,
+        this.rootCredential.token,
+        'нет даты отправки сообщения',
+        userBot.chatId,
+      );
+      return;
+    }
+    const group = await this.groupRepository.findOne({
+      where: {
+        groupName: splitContent[6],
+        userBot,
+      },
+    });
+    if (!group.id) {
+      await this.textService.sentMessage(
+        this.rootCredential.instance,
+        this.rootCredential.token,
+        'группа не зарегистрированна',
+        userBot.chatId,
+      );
+      return;
+    }
+    const messegeEntity = this.messageRepository.create({
+      groupId: group.id,
+      text: splitContent[7],
+      imageUrl: url ? url : null,
+      when: date.toSQL(),
+      userBot,
+    });
+    await this.messageRepository.save(messegeEntity);
+    await this.textService.sentMessage(
+      this.rootCredential.instance,
+      this.rootCredential.token,
+      'ok',
+      userBot.chatId,
+    );
+    return;
   }
 
   public async sentTemplateAddGroup(userBot: UserBot) {

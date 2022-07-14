@@ -30,7 +30,10 @@ export class RootBotController {
       case ActionType.TEMPLATE_USER_MESSAGE:
         return await this.rootBotService.sentTemplateUserMessage(userBot);
       case ActionType.USER_MESSAGE:
-        return await this.rootBotService.delayedMessage(inputMessageDTO);
+        return await this.rootBotService.delayedMessage(
+          inputMessageDTO,
+          userBot,
+        );
       default:
         return;
     }

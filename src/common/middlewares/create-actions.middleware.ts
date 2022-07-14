@@ -10,15 +10,21 @@ export interface ActionRequest extends Request {
 @Injectable()
 export class CreateActionMiddleware implements NestMiddleware {
   createAction(req: ActionRequest) {
-    const moscow = DateTime.local(2022, 7, 6, 20, 30, 20).setZone(
-      'Europe/Moscow',
-    );
-    const teme = DateTime.local().setZone('Europe/Moscow');
-    if (moscow.toSQL() > teme.toSQL()) {
-      console.log('Moscow');
-    } else {
-      console.log('time');
+    try {
+      const moscow = DateTime.local(2022, 12, 6, 20, 30, 20).setZone(
+        'Europe/Moscow',
+      );
+      console.log(moscow);
+      const teme = DateTime.local().setZone('Europe/Moscow');
+      if (moscow.toSQL() > teme.toSQL()) {
+        console.log('Moscow');
+      } else {
+        console.log('time');
+      }
+    } catch (e) {
+      console.log(e, 'error');
     }
+
     const typeMessage = req.body.messageData.typeMessage;
     let textMessageData = req.body.messageData.textMessageData;
     if (!textMessageData) {

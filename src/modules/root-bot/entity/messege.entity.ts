@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserBot } from './user-bot.entity';
+import { IsOptional } from 'class-validator';
 @Entity()
 export class Messege {
   @PrimaryGeneratedColumn('uuid')
@@ -14,14 +15,17 @@ export class Messege {
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column('varchar')
-  imageUrl!: string;
+  @Column({ type: 'varchar', nullable: true })
+  imageUrl?: string;
 
   @Column('varchar')
   text!: string;
 
   @Column('timestamptz')
   when!: Date;
+
+  @Column('uuid')
+  groupId!: string;
 
   @ManyToOne(() => UserBot, (UserBot) => UserBot.chats)
   userBot: UserBot;
