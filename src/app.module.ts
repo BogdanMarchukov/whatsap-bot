@@ -7,8 +7,8 @@ import { MessageModule } from './modules/message/message.module';
 import { CreateActionMiddleware } from './common/middlewares/create-actions.middleware';
 import { UserBotModule } from './modules/user-bot/user-bot.module';
 import { RequestUserMiddleware } from './common/middlewares/request-user.middleware';
-import { UserBotRepository } from "./modules/root-bot/user-bot.repository";
-import { GroupRepository } from "./modules/root-bot/group.repository";
+import { UserBotRepository } from './modules/root-bot/user-bot.repository';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -17,6 +17,7 @@ import { GroupRepository } from "./modules/root-bot/group.repository";
       isGlobal: true,
       load: [configuration],
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forFeature([UserBotRepository]),
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => configService.get('db'),

@@ -44,6 +44,9 @@ export class CreateActionMiddleware implements NestMiddleware {
       if (text === '#r') {
         return ActionType.TEMPLATE_REGISTRATION;
       }
+      if (text === '#') {
+        return ActionType.HELP;
+      }
       if (textActionArray[0] === '#r-имя') {
         return ActionType.REGISTRATION;
       }

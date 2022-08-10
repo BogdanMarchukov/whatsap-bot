@@ -5,4 +5,5 @@ export enum ActionType {
   USER_MESSAGE = 'USER_MESSAGE',
   NULL = '',
   TEMPLATE_ADD_CHAT = 'TEMPLATE_ADD_CHAT',
+  HELP = 'HELP',
 }

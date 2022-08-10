@@ -64,6 +64,37 @@ export class TextService {
       )
       .subscribe();
   }
+
+  async sentImageAndMessage(
+    idInstance: string,
+    token: string,
+    message: string,
+    chatId: string,
+    imageUrl: string,
+  ) {
+    const fileName = imageUrl.split('/');
+    console.log(fileName[fileName.length - 1]);
+    const observer = this.httpService.post(
+      `https://api.green-api.com/waInstance${idInstance}/SendFileByUrl/${token}
+`,
+      {
+        chatId,
+        urlFile: imageUrl,
+        fileName: fileName[fileName.length - 1],
+        caption: message,
+      },
+    );
+    observer.pipe(
+      catchError((err, caught) => {
+        if (err) {
+          this.logger.log(err, 'Error register');
+        }
+        return caught;
+      }),
+    );
+    return firstValueFrom<AxiosResponse>(observer);
+  }
+
   async registerWebhook(idInstance: string, token: string) {
     const observer = this.httpService.post(
       `https://api.green-api.com/waInstance${idInstance}/SetSettings/${token}`,

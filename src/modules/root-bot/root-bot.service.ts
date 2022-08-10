@@ -8,6 +8,7 @@ import { GroupRepository } from './group.repository';
 import { InputMessageDTO } from '../../common/dto/notification.dto';
 import { DateTime } from 'luxon';
 import { MessageRepository } from './message.repository';
+import { Cron } from '@nestjs/schedule';
 
 interface ClientDataType {
   name: string | null;
@@ -26,6 +27,45 @@ export class RootBotService {
   ) {}
   private rootCredential =
     this.configService.get<RootCredentialType>('rootCredential');
+
+  @Cron('*/1 * * * *')
+  public async checkEvent() {
+    const time = DateTime.local().setZone('Europe/Moscow');
+    const userMessage = await this.messageRepository
+      .createQueryBuilder('message')
+      .leftJoinAndSelect('message.userBot', 'userBot')
+      .where('message.when < :time', { time })
+      .getMany();
+    if (userMessage.length) {
+      for (const messege of userMessage) {
+        const { userBot, groupId, text, imageUrl, id } = messege;
+        const group = await this.groupRepository.findOne({ id: groupId });
+        const result = await this.textService.sentImageAndMessage(
+          userBot.idInstance,
+          userBot.apiTokenInstance,
+          text,
+          group.groupId,
+          imageUrl,
+        );
+        if (result.status === 200) {
+          await this.messageRepository.delete({ id });
+        }
+      }
+    }
+  }
+
+  public async helperText(user: UserBot) {
+    await await this.textService.sentMessage(
+      this.rootCredential.instance,
+      this.rootCredential.token,
+      `
+      #r - Регистрация бота
+      #g - Pеистрация чата
+      #s - Шаблон сообщения
+      `,
+      user.chatId,
+    );
+  }
 
   public async registerBot(
     message: string | null,
@@ -132,7 +172,7 @@ export class RootBotService {
         userBot,
       },
     });
-    if (!group.id) {
+    if (!group) {
       await this.textService.sentMessage(
         this.rootCredential.instance,
         this.rootCredential.token,

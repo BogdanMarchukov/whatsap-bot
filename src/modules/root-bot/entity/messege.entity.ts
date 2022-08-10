@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserBot } from './user-bot.entity';
-import { IsOptional } from 'class-validator';
+import { v4 as uuidv4 } from 'uuid';
 @Entity()
 export class Messege {
   @PrimaryGeneratedColumn('uuid')
