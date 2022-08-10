@@ -19,7 +19,7 @@ export class RootBotController {
     const { chatId } = inputMessageDTO.senderData;
     switch (reqAction) {
       case ActionType.HELP:
-        return await this.rootBotService.helperText(userBot);
+        return await this.rootBotService.helperText(chatId);
       case ActionType.TEMPLATE_REGISTRATION:
         return await this.rootBotService.registerBot(null, chatId, true);
       case ActionType.REGISTRATION:

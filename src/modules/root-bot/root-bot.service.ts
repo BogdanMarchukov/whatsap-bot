@@ -54,7 +54,7 @@ export class RootBotService {
     }
   }
 
-  public async helperText(user: UserBot) {
+  public async helperText(chatId: string) {
     await await this.textService.sentMessage(
       this.rootCredential.instance,
       this.rootCredential.token,
@@ -63,7 +63,7 @@ export class RootBotService {
       #g - Pеистрация чата
       #s - Шаблон сообщения
       `,
-      user.chatId,
+      chatId,
     );
   }
 
