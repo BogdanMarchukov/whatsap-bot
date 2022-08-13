@@ -129,12 +129,12 @@ export class RootBotService {
     }
   }
 
-  async sentTemplateUserMessage(userBot: UserBot) {
+  async sentTemplateUserMessage(chatId: string) {
     await this.textService.sentMessage(
       this.rootCredential.instance,
       this.rootCredential.token,
       '#sa:Д:М:ГГГГ:Ч:М:Название чата: ...текст. Важно(в дате и времени не должно быть нуля перед числом - (06)',
-      userBot.chatId,
+      chatId,
     );
     return;
   }

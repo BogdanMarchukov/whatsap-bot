@@ -16,7 +16,7 @@ export class RootBotController {
     @RequestAction() reqAction: ActionType,
     @RequestUserDecorator() userBot: UserBot,
   ) {
-    const { chatId } = inputMessageDTO.senderData;
+    const chatId = inputMessageDTO.senderData?.chatId;
     switch (reqAction) {
       case ActionType.HELP:
         return await this.rootBotService.helperText(chatId);
@@ -28,9 +28,13 @@ export class RootBotController {
           chatId,
         );
       case ActionType.TEMPLATE_ADD_CHAT:
-        return await this.rootBotService.sentTemplateAddGroup(userBot);
+        if (userBot) {
+          return await this.rootBotService.sentTemplateAddGroup(userBot);
+        } else {
+          return await this.rootBotService.registerBot(null, chatId, true);
+        }
       case ActionType.TEMPLATE_USER_MESSAGE:
-        return await this.rootBotService.sentTemplateUserMessage(userBot);
+        return await this.rootBotService.sentTemplateUserMessage(chatId);
       case ActionType.USER_MESSAGE:
         return await this.rootBotService.delayedMessage(
           inputMessageDTO,
