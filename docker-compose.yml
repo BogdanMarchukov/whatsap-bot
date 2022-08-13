@@ -10,7 +10,6 @@ services:
       POSTGRES_HOST: ${POSTGRES_HOST}
       TZ: ${TZ}
     container_name: postgres-db
-    command: apk add --no-cache tzdata
     ports:
       #      - "127.0.0.1:5432:5432"
       - "5432:5432" # open host for superset purposes
@@ -19,15 +18,11 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
-
-
   nestjs:
     build:
       context: .
       dockerfile: ./Dockerfile
     image: bot-whats-ap
-    command: >
-      bash -c "apk add --no-cache tzdata"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
