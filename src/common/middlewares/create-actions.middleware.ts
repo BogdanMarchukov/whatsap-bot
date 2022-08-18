@@ -9,11 +9,11 @@ export interface ActionRequest extends Request {
 @Injectable()
 export class CreateActionMiddleware implements NestMiddleware {
   createAction(req: ActionRequest) {
-    const typeMessage = req.body.messageData.typeMessage;
-    let textMessageData = req.body.messageData.textMessageData;
+    const typeMessage = req.body.messageData?.typeMessage;
+    let textMessageData = req.body.messageData?.textMessageData;
     if (!textMessageData) {
       textMessageData = {
-        textMessage: req.body.messageData.fileMessageData.caption,
+        textMessage: req.body.messageData?.fileMessageData?.caption,
       };
     }
     if (!typeMessage || !textMessageData) {
@@ -49,7 +49,11 @@ export class CreateActionMiddleware implements NestMiddleware {
   }
 
   async use(req: ActionRequest, res: Response, next: NextFunction) {
-    req.action = this.createAction(req);
-    next();
+    try {
+      req.action = this.createAction(req);
+      next();
+    } catch (e) {
+      req.action = ActionType.NULL;
+    }
   }
 }
