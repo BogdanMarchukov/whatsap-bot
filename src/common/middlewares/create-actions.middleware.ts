@@ -13,7 +13,7 @@ export class CreateActionMiddleware implements NestMiddleware {
     let textMessageData = req.body.messageData?.textMessageData;
     if (!textMessageData) {
       textMessageData = {
-        textMessage: req.body.messageData?.fileMessageData?.caption,
+        textMessage: req.body.messageData?.fileMessageData?.caption || '',
       };
     }
     if (!typeMessage || !textMessageData) {
@@ -53,6 +53,7 @@ export class CreateActionMiddleware implements NestMiddleware {
       req.action = this.createAction(req);
       next();
     } catch (e) {
+      console.log(e, 'error');
       req.action = ActionType.NULL;
     }
   }
